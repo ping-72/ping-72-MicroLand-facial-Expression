@@ -31,6 +31,6 @@ async def websocket_endpoint(websocket: WebSocket):
             "emotion": max(prediction[0]['emotions'], key=prediction[0]['emotions'].get)
         }
         await websocket.send_json(response)
-        websocket.close()
+        # websocket.close()
     except:
         websocket.close()

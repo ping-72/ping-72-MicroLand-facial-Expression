@@ -1,6 +1,5 @@
 import React, { useRef, useEffect } from "react";
 import "./App.css";
-import logo from './logo.svg';
 
 import * as tf from "@tensorflow/tfjs";
 import Webcam from "react-webcam";
@@ -9,18 +8,16 @@ import { drawMesh } from "./utilities";
 function App() {
   const webcamRef = useRef(null);
   const canvasRef = useRef(null);
-  const blazeface = require('@tensorflow-models/blazeface')
+  const blazeface = require("@tensorflow-models/blazeface");
 
   //  Load blazeface
   const runFaceDetectorModel = async () => {
-
-    const model = await blazeface.load()
-    console.log("FaceDetection Model is Loaded..") 
+    const model = await blazeface.load();
+    console.log("FaceDetection Model is Loaded..");
     setInterval(() => {
       detect(model);
-    }, 100);
- 
-  }
+    }, 800);
+  };
 
   const detect = async (net) => {
     if (
@@ -46,127 +43,237 @@ function App() {
       //console.log(face);
 
       // Websocket
-      var socket = new WebSocket('ws://localhost:8000')
-      var imageSrc = webcamRef.current.getScreenshot()
+      var socket = new WebSocket("ws://localhost:8000");
+      var imageSrc = webcamRef.current.getScreenshot();
       var apiCall = {
         event: "localhost:subscribe",
-        data: { 
-          image: imageSrc
+        data: {
+          image: imageSrc,
         },
       };
-      socket.onopen = () => socket.send(JSON.stringify(apiCall))
-      socket.onmessage = function(event) {
-        var pred_log = JSON.parse(event.data)
-        document.getElementById("Angry").value = Math.round(pred_log['predictions']['angry']*100)
-        document.getElementById("Neutral").value = Math.round(pred_log['predictions']['neutral']*100)
-        document.getElementById("Happy").value = Math.round(pred_log['predictions']['happy']*100)
-        document.getElementById("Fear").value = Math.round(pred_log['predictions']['fear']*100)
-        document.getElementById("Surprise").value = Math.round(pred_log['predictions']['surprise']*100)
-        document.getElementById("Sad").value = Math.round(pred_log['predictions']['sad']*100)
-        document.getElementById("Disgust").value = Math.round(pred_log['predictions']['disgust']*100)
+      socket.onopen = () => socket.send(JSON.stringify(apiCall));
+      socket.onmessage = function (event) {
+        var pred_log = JSON.parse(event.data);
+        document.getElementById("Angry").value = Math.round(
+          pred_log["predictions"]["angry"] * 100
+        );
+        document.getElementById("Neutral").value = Math.round(
+          pred_log["predictions"]["neutral"] * 100
+        );
+        document.getElementById("Happy").value = Math.round(
+          pred_log["predictions"]["happy"] * 100
+        );
+        document.getElementById("Fear").value = Math.round(
+          pred_log["predictions"]["fear"] * 100
+        );
+        document.getElementById("Surprise").value = Math.round(
+          pred_log["predictions"]["surprise"] * 100
+        );
+        document.getElementById("Sad").value = Math.round(
+          pred_log["predictions"]["sad"] * 100
+        );
+        document.getElementById("Disgust").value = Math.round(
+          pred_log["predictions"]["disgust"] * 100
+        );
 
-        document.getElementById("emotion_text").value = pred_log['emotion']
+        document.getElementById("emotion_text").value = pred_log["emotion"];
 
         // Get canvas context
         const ctx = canvasRef.current.getContext("2d");
-        requestAnimationFrame(()=>{drawMesh(face, pred_log, ctx)});
-      }
+        requestAnimationFrame(() => {
+          drawMesh(face, pred_log, ctx);
+        });
+      };
     }
   };
 
-  useEffect(()=>{runFaceDetectorModel()}, []);
-  return (
-    <div className="App">
-      <Webcam
-          ref={webcamRef}
-          style={{
-            position: "absolute",
-            marginLeft: "auto",
-            marginRight: "auto",
-            left: 0,
-            right: 600,
-            top:20,
-            textAlign: "center",
-            zindex: 9,
-            width: 640,
-            height: 480,
-          }}
-        />
+  useEffect(() => {
+    runFaceDetectorModel();
+  }, []);
 
-        <canvas
-          ref={canvasRef}
-          style={{
-            position: "absolute",
-            marginLeft: "auto",
-            marginRight: "auto",
-            left: 0,
-            right: 600,
-            top:20,
-            textAlign: "center",
-            zindex: 9,
-            width: 640,
-            height: 480,
-          }}
-        />
-      <header className="App-header">
-        <img src={logo} 
-        className="App-logo" 
-        alt="logo"
+  return (
+    <>
+      <h1
         style={{
-          position: "absolute",
-          marginLeft: "auto",
-          marginRight: "auto",
-          bottom:10,
-          left: 0,
-          right: 0,
-          width: 150,
-          height: 150,
+          marginTop: 50,
+          boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+
+          textAlign: "center",
+          backgroundColor: "#f5f5f5",
+          padding: "10px",
+          borderRadius: "8px",
         }}
-        />   
-        <div className="Prediction" style={{
-          position:"absolute",
-          right:100,
-          width:500,
-          top: 60
-        }}>
-          <label forhtml="Angry" style={{color:'red'}}>Angry </label>
-          <progress id="Angry" value="0" max = "100" >10%</progress>
-          <br></br>
-          <br></br>
-          <label forhtml="Neutral" style={{color:'lightgreen'}}>Neutral </label>
-          <progress id="Neutral" value="0" max = "100">10%</progress>
-          <br></br>
-          <br></br>
-          <label forhtml="Happy" style={{color:'orange'}}>Happy </label>
-          <progress id="Happy" value="0" max = "100" >10%</progress>
-          <br></br>
-          <br></br>
-          <label forhtml="Fear" style={{color:'lightblue'}}>Fear </label>
-          <progress id="Fear" value="0" max = "100" >10%</progress>
-          <br></br>
-          <br></br>
-          <label forhtml="Surprise" style={{color:'yellow'}}>Surprised </label>
-          <progress id="Surprise" value="0" max = "100" >10%</progress>
-          <br></br>
-          <br></br>
-          <label forhtml="Sad" style={{color:'gray'}} >Sad </label>
-          <progress id="Sad" value="0" max = "100" >10%</progress>
-          <br></br>
-          <br></br>
-          <label forhtml="Disgust" style={{color:'pink'}} >Disgusted </label>
-          <progress id="Disgust" value="0" max = "100" >10%</progress>
+      >
+        Real Time Em
+        <img
+          src="/download.png"
+          alt="Emotion Icon"
+          style={{ height: "20px", verticalAlign: "middle" }}
+        />
+        tion Capture
+      </h1>
+
+      <div
+        className="App"
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "center",
+          height: "80vh",
+          backgroundColor: "#f9f9f9",
+        }}
+      >
+        {/* Webcam and Canvas */}
+        <div
+          style={{
+            boxShadow: "0px 4px 10px rgba(0.2, 0.2, 0.2, 0.3)",
+            display: "flex",
+            borderRadius: "12px",
+            padding: 15,
+          }}
+        >
+          <div
+            style={{
+              position: "relative",
+              width: "640px",
+              height: "480px",
+              borderRadius: "12px",
+              overflow: "hidden",
+              boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+            }}
+          >
+            <Webcam
+              ref={webcamRef}
+              style={{
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+              }}
+            />
+            <canvas
+              ref={canvasRef}
+              style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                width: "100%",
+                height: "100%",
+              }}
+            />
+          </div>
+
+          {/* Dominant Emotion */}
+          <div
+            style={{
+              margin: "20px",
+              width: "100%",
+              maxWidth: "700px",
+              backgroundColor: "#ffffff",
+              borderRadius: "12px",
+              padding: "20px",
+              boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.3)",
+              textAlign: "center",
+            }}
+          >
+            <h2
+              style={{
+                fontSize: "24px",
+                fontWeight: "bold",
+                marginBottom: "20px",
+              }}
+            >
+              Dominant Emotion:{" "}
+              <input
+                id="emotion_text"
+                name="emotion_text"
+                vale="Neutral"
+                style={{
+                  width: 200,
+                  height: 50,
+                  bottom: 60,
+                  left: 300,
+                  border: "none",
+                  "font-size": "25px",
+                }}
+              ></input>
+            </h2>
+
+            {/* Emotions */}
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr",
+                gap: "20px",
+                textAlign: "left",
+              }}
+            >
+              <div>
+                <label forhtml="Angry" style={{ color: "red" }}>
+                  Angry{" "}
+                </label>
+                <progress id="Angry" value="0" max="100">
+                  10%
+                </progress>
+              </div>
+
+              <div>
+                <label forhtml="Neutral" style={{ color: "lightgreen" }}>
+                  Neutral{" "}
+                </label>
+                <progress id="Neutral" value="0" max="100">
+                  10%
+                </progress>
+              </div>
+
+              <div>
+                <label forhtml="Happy" style={{ color: "orange" }}>
+                  Happy{" "}
+                </label>
+                <progress id="Happy" value="0" max="100">
+                  10%
+                </progress>
+              </div>
+
+              <div>
+                <label forhtml="Fear" style={{ color: "lightblue" }}>
+                  Fear{" "}
+                </label>
+                <progress id="Fear" value="0" max="100">
+                  10%
+                </progress>
+              </div>
+              <div>
+                <label forhtml="Surprise" style={{ color: "black" }}>
+                  Surprised{" "}
+                </label>
+                <progress id="Surprise" value="0" max="100">
+                  10%
+                </progress>
+              </div>
+
+              <div>
+                <label forhtml="Sad" style={{ color: "gray" }}>
+                  Sad{" "}
+                </label>
+                <progress id="Sad" value="0" max="100">
+                  10%
+                </progress>
+              </div>
+
+              <div>
+                <label forhtml="Disgust" style={{ color: "pink" }}>
+                  Disgusted{" "}
+                </label>
+                <progress id="Disgust" value="0" max="100">
+                  10%
+                </progress>
+              </div>
+            </div>
+          </div>
         </div>
-        <input id="emotion_text" name="emotion_text" vale="Neutral"
-               style={{
-                 position:"absolute",
-                 width:200,
-                 height:50,
-                 bottom:60,
-                 left:300,
-                 "font-size": "30px",
-               }}></input>
-      </header>
-    </div>
+      </div>
+    </>
   );
 }
 

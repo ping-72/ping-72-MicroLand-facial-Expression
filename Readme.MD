@@ -22,7 +22,7 @@ The frontend is developed in react.js and the backend is developed in FastAPI. T
    - Model returns the prediction probability of each emotion.
 4. Tensorflow JS.<img align="left" alt="tf" width="26px" src="./Resources/Tensorflow.png" /><br>
    - Face Detection model
-   - Detect faces in an image using a Single Shot Detector architecture with a custom encoder(Blazeface).
+   - Detect faces in an image using a Single Shot Detector architecture with a custom encoder.
 
 # Implementation
 
