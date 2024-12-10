@@ -1,0 +1,42 @@
+emotion-recognition/node_modules
+emotion-recognition/README.md
+emotion-recognition/.gitignore
+server/server
+server/__pycache__
+server/myenv
+.vercel
+
+# Virtual Environment
+server/myenv/
+
+# Python Cache
+server/__pycache__/
+
+# Compiled Python Files
+*.pyc
+*.pyo
+*.pyd
+
+# Node.js Dependencies
+emotion-recognition/node_modules/
+
+# Git Directories
+.git/
+.github/
+
+# Vercel Directory
+.vercel/
+
+# Logs and Environment Variables
+*.log
+*.env
+*.venv
+
+# Swap Files and OS-specific Files
+*.swp
+*.swo
+*.DS_Store
+
+# Large Data Directories
+Resources/
+emotion-recognition/Resources/

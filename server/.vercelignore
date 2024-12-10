@@ -1,0 +1,44 @@
+# Exclude virtual environments
+
+server/myenv/
+
+# Exclude Python cache
+
+server/**pycache**/
+
+# Exclude compiled Python files
+
+_.pyc
+_.pyo
+\*.pyd
+
+# Exclude node_modules (if present)
+
+emotion-recognition/node_modules/
+
+# Exclude Git directories
+
+.git/
+.github/
+
+# Exclude Vercel directory
+
+.vercel/
+
+# Exclude build artifacts and other unnecessary files
+
+server/server
+_.log
+_.env
+\*.venv
+
+# Exclude system-specific files
+
+_.swp
+_.swo
+\*.DS_Store
+
+# Exclude large data directories (if any)
+
+Resources/
+emotion-recognition/Resources/

@@ -4,3 +4,4 @@ emotion-recognition/.gitignore
 server/server
 server/__pycache__
 server/myenv
+.vercel
